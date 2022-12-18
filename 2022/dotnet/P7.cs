@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 
@@ -11,7 +12,7 @@ internal static class P7
         long Size { get; }
     }
 
-    private class Directory : INode
+    private class Directory : INode, IEnumerable<Directory>
     {
         private readonly Dictionary<string, INode> _children = new();
         private readonly Lazy<long> _totalSize; 
@@ -42,16 +43,21 @@ internal static class P7
             return null;
         }
 
-        public IEnumerable<Directory> GetAllDirectories()
+        public IEnumerator<Directory> GetEnumerator()
         {
             yield return this;
             foreach (var subDirectory in _children.Values.OfType<Directory>())
             {
-                foreach (var directory in subDirectory.GetAllDirectories())
+                foreach (var directory in subDirectory)
                 {
                     yield return directory;
                 }
             }
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
     }
 
@@ -172,7 +178,7 @@ internal static class P7
         using var reader = new StreamReader(new FileStream(file.FullName, FileMode.Open, FileAccess.Read));
         var currentDirectory = await BuildFileSystem(reader);
 
-        return currentDirectory.GetAllDirectories()
+        return currentDirectory
             .Where(d => d.Size <= 100000)
             .Sum(d => d.Size);
     }
@@ -185,7 +191,7 @@ internal static class P7
         var unused = capacity - currentDirectory.Size;
         var needed = updateSize - unused;
 
-        var candidates = currentDirectory.GetAllDirectories()
+        var candidates = currentDirectory
             .Where(d => d.Size >= needed);
 
         return candidates
