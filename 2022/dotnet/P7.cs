@@ -144,6 +144,27 @@ internal static class P7
         return ProcessCommand;
     }
 
+    private static async Task<Directory> BuildFileSystem(TextReader reader)
+    {
+        Directory? currentDirectory = null;
+        var processCommand = CreateCommandProcessor();
+        var line = await reader.ReadLineAsync();
+
+        while (!string.IsNullOrEmpty(line))
+        {
+            currentDirectory = await processCommand(currentDirectory, line, reader);
+            line = await reader.ReadLineAsync();
+        }
+
+        while (currentDirectory?.Parent != null)
+        {
+            currentDirectory = currentDirectory.Parent;
+        }
+
+        Debug.Assert(currentDirectory != null, nameof(currentDirectory) + " != null");
+        return currentDirectory;
+    }
+
     internal static async Task<long> GetTotalSize(FileInfo file)
     {
         using var reader = new StreamReader(new FileStream(file.FullName, FileMode.Open, FileAccess.Read));
@@ -168,26 +189,5 @@ internal static class P7
         return candidates
             .OrderBy(d => d.Size)
             .First().Size;
-    }
-
-    private static async Task<Directory> BuildFileSystem(StreamReader reader)
-    {
-        Directory? currentDirectory = null;
-        var processCommand = CreateCommandProcessor();
-        var line = await reader.ReadLineAsync();
-
-        while (!string.IsNullOrEmpty(line))
-        {
-            currentDirectory = await processCommand(currentDirectory, line, reader);
-            line = await reader.ReadLineAsync();
-        }
-
-        while (currentDirectory?.Parent != null)
-        {
-            currentDirectory = currentDirectory.Parent;
-        }
-
-        Debug.Assert(currentDirectory != null, nameof(currentDirectory) + " != null");
-        return currentDirectory;
     }
 }
