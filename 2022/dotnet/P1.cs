@@ -1,3 +1,5 @@
+namespace aoc22;
+
 internal static class P1
 {
     public static async Task<int> FindMaxCalories(FileInfo file)

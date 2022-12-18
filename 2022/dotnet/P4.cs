@@ -1,3 +1,5 @@
+namespace aoc22;
+
 internal static class P4
 {
     internal readonly struct ClosedRange
@@ -27,7 +29,7 @@ internal static class P4
             var end = int.Parse(parts[1]);
             return new ClosedRange(start, end);
         }
-   }
+    }
 
     internal static async Task<int> SumFullContainments(FileInfo file) => await File.ReadLinesAsync(file.FullName)
         .Select(ParsePair)

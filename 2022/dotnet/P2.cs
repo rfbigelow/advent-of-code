@@ -1,3 +1,5 @@
+namespace aoc22;
+
 internal static class P2
 {
     enum Move

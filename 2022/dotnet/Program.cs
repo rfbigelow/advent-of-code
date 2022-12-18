@@ -1,4 +1,5 @@
 ﻿using System.CommandLine;
+using aoc22;
 
 var rootCommand = new RootCommand("Advent of Code 2022 solver")
 {
@@ -61,7 +62,16 @@ var rootCommand = new RootCommand("Advent of Code 2022 solver")
         "p6.2",
         "Find the position of the end of the start-of-message marker",
         (file) => P6.GetMarkerEndPosition(file, 14)
-    )
+    ),
+    // day 7
+    CreateCommand<FileInfo, long>(
+        "p7.1",
+        "Calculate size",
+        P7.GetTotalSize),
+    CreateCommand<FileInfo, long>(
+        "p7.2",
+        "Find directory size",
+        (file) => P7.FindDirectorySize(file, 70000000, 30000000))
 };
 
 await rootCommand.InvokeAsync(args);

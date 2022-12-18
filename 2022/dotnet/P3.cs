@@ -1,4 +1,6 @@
 
+namespace aoc22;
+
 internal static class P3
 {
     private static int ValueToPriority(char value) => char.IsAsciiLetterLower(value)

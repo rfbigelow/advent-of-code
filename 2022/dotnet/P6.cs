@@ -1,3 +1,5 @@
+namespace aoc22;
+
 internal static class P6
 {
     private static int GetKey(char c) => c - 'a';

@@ -1,6 +1,8 @@
 using System.Text;
 using System.Text.RegularExpressions;
 
+namespace aoc22;
+
 internal static class P5
 {
     internal enum Mover
