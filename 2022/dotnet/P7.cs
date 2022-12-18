@@ -14,15 +14,17 @@ internal static class P7
     private class Directory : INode
     {
         private readonly Dictionary<string, INode> _children = new();
+        private readonly Lazy<long> _totalSize; 
         
         public string Name { get; }
-        public long Size => _children.Select(x => x.Value.Size).Sum();
+        public long Size => _totalSize.Value;
         public Directory? Parent { get; }
 
         public Directory(string name, Directory? parent)
         {
             Name = name;
             Parent = parent;
+            _totalSize = new Lazy<long>(() => _children.Select(x => x.Value.Size).Sum());
         }
 
         public void Add(INode node)
