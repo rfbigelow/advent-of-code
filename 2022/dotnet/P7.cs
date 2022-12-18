@@ -176,9 +176,9 @@ internal static class P7
     internal static async Task<long> GetTotalSize(FileInfo file)
     {
         using var reader = new StreamReader(new FileStream(file.FullName, FileMode.Open, FileAccess.Read));
-        var currentDirectory = await BuildFileSystem(reader);
+        var root = await BuildFileSystem(reader);
 
-        return currentDirectory
+        return root
             .Where(d => d.Size <= 100000)
             .Sum(d => d.Size);
     }
@@ -186,12 +186,12 @@ internal static class P7
     internal static async Task<long> FindDirectorySize(FileInfo file, long capacity, long updateSize)
     {
         using var reader = new StreamReader(new FileStream(file.FullName, FileMode.Open, FileAccess.Read));
-        var currentDirectory = await BuildFileSystem(reader);
+        var root = await BuildFileSystem(reader);
 
-        var unused = capacity - currentDirectory.Size;
+        var unused = capacity - root.Size;
         var needed = updateSize - unused;
 
-        var candidates = currentDirectory
+        var candidates = root
             .Where(d => d.Size >= needed);
 
         return candidates
